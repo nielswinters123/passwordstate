@@ -4,7 +4,7 @@
   gather_facts: no
 
   vars:
-    - password_list_id : "7344"               # Avit automation lab
+    - password_list_id : "7344"               # AAL
 
   vars_prompt:
     - name: "password"
