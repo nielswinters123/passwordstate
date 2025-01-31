@@ -1,0 +1,46 @@
+---
+- name: Retrieve Password List from Passwordstate
+  hosts: all
+  gather_facts: no
+
+  vars:
+    - password_list_id : "7344"               # Avit automation lab
+
+  vars_prompt:
+    - name: "password"
+      prompt: "Enter Password: "
+      private: yes  
+    - name: "username"
+      prompt: "Enter Username: "
+      private: no
+    - name: "passwordstate_instance"
+      prompt: "Enter Passwordstate Instance: "
+      private: no
+
+  tasks:
+    - name: Fetch password list using default credentials
+      uri:
+        url: "https://{{passwordstate_instance}}/winapi/passwordlists/{{ password_list_id }}"
+        method: GET
+        return_content: yes
+        validate_certs: no
+      register: response_default
+
+    - name: Display response (default credentials)
+      debug:
+        var: response_default.json
+
+    - name: Fetch password list using specified credentials
+      uri:
+        url: "https://{{passwordstate_instance}}/winapi/passwordlists/{{ password_list_id }}"
+        method: GET
+        user: "{{ username }}"
+        password: "{{ password }}"
+        force_basic_auth: yes
+        return_content: yes
+        validate_certs: no
+      register: response_specified
+
+    - name: Display response (specified credentials)
+      debug:
+        var: response_specified.json
